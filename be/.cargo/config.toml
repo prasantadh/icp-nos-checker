@@ -1,0 +1,4 @@
+[env]
+ASSIGNMENTS = "/Users/bhakku/workspace/icp-nos-checker/db/assignments.json"
+SUBMISSIONS = "/Users/bhakku/workspace/icp-nos-checker/db/submissions.csv"
+DOWNLOADS = "/Users/bhakku/workspace/icp-nos-checker/downloads"

@@ -1,0 +1,16 @@
+name: noschecker
+services:
+  backend:
+    build:
+      context: be
+      target: production
+    environment:
+      - ASSIGNMENTS=/data/assignments.json
+      - SUBMISSIONS=/data/submissions.csv
+      - DOWNLOADS=/downloads
+    volumes:
+      - ./db/assignments.json:/data/assignments.json
+      - ./db/submissions.csv:/data/submissions.csv
+    ports:
+      - 80:8080
+
