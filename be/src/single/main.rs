@@ -21,7 +21,7 @@ use std::{
 pub struct Assignment {
     pub name: String,
     pub filepath: String,
-    pub deadline: DateTime<Local>,
+    pub deadline: DateTime<Utc>,
     pub grader: String,
 }
 
