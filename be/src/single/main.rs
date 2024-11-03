@@ -6,7 +6,7 @@ mod git;
 mod error;
 pub use error::{Error, Result};
 
-use axum::{extract::State, routing::get, Router};
+use axum::{extract::State, routing::get, Json, Router};
 use chrono::prelude::*;
 use git::Report;
 use serde::{Deserialize, Serialize};
@@ -42,7 +42,8 @@ pub struct AppState {
 #[tokio::main]
 async fn main() {
     // collect submissions
-    let mut reader = csv::Reader::from_path(config().submissions.clone()).unwrap();
+    let mut reader = csv::Reader::from_path(config().submissions.clone())
+        .expect("error processing submissions.csv file!");
     let mut submissions: Vec<Submission> = vec![];
     for result in reader.deserialize() {
         let submission: Submission = result.expect("failed to deserialize the submission");
@@ -68,7 +69,7 @@ async fn main() {
         loop {
             let report = git::report(&assignments, &submissions).unwrap();
             let mut state = state_clone.lock().unwrap();
-            mem::replace(&mut *state, report);
+            let _ = mem::replace(&mut *state, report);
             println!("report updated");
             drop(state);
         }
@@ -81,7 +82,8 @@ async fn main() {
         .unwrap();
 }
 
-async fn get_submissions(State(state): State<AppState>) -> String {
+async fn get_submissions(State(state): State<AppState>) -> Json<Vec<Report>> {
     let current = state.report.lock().unwrap();
-    format!("{current:#?}")
+    let copy = (*current).clone();
+    axum::Json(copy)
 }

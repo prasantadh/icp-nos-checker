@@ -1,12 +1,9 @@
-use std::{
-    io::{self, Write},
-    process::Command,
-};
+use std::process::Command;
 
 use git2::Repository;
 use serde::Serialize;
 
-use crate::{config, Assignment, Error, Result, Submission};
+use crate::{config, Assignment, Result, Submission};
 
 fn do_fetch<'a>(
     repo: &'a git2::Repository,
@@ -141,20 +138,19 @@ fn do_pull(path: &String) -> core::result::Result<(), git2::Error> {
     Ok(())
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone)]
 pub enum AssignmentStatus {
     NotSubmitted,
     Submitted,
     Late,
 }
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone)]
 pub struct AssignmentReport {
     pub name: String,
     pub status: AssignmentStatus,
-    pub content: Option<String>,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone)]
 pub struct Report {
     pub id: i64,
     pub assignments: Vec<AssignmentReport>,
@@ -202,7 +198,6 @@ pub fn report(assigments: &[Assignment], submissions: &[Submission]) -> Result<V
             let assignment_report = AssignmentReport {
                 name: assignment.name.clone(),
                 status,
-                content: None, // FIXME: eventually this should have the pdf content
             };
             per_student_report.push(assignment_report);
         }
