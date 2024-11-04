@@ -11,6 +11,7 @@ use chrono::prelude::*;
 use git::Report;
 use serde::{Deserialize, Serialize};
 use tokio::{net::TcpListener, runtime::Runtime};
+use tower_http::cors::{Any, CorsLayer};
 
 use std::{
     fs, mem,
@@ -58,8 +59,10 @@ async fn main() {
     let state = AppState {
         report: Arc::new(Mutex::new(vec![])),
     };
+    let cors = CorsLayer::new().allow_methods(Any).allow_origin(Any);
     let app = Router::new()
         .route("/", get(get_submissions))
+        .layer(cors)
         .with_state(state.clone());
 
     // in an infinite loop, download all git repos
