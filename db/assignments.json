@@ -1,0 +1,14 @@
+[
+  {
+    "name": "log1",
+    "filepath": "logs/1.pdf",
+    "deadline": "2024-09-30T23:59:59+05:45",
+    "grader": "Prasant Adhikari"
+  },
+  {
+    "name": "log2",
+    "filepath": "logs/2.pdf",
+    "deadline": "2024-11-11T23:59:59+05:45",
+    "grader": "Prasant Adhikari"
+  }
+]
