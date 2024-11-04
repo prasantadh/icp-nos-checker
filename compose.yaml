@@ -11,6 +11,14 @@ services:
     volumes:
       - ./db/assignments.json:/data/assignments.json
       - ./db/submissions.csv:/data/submissions.csv
+      - ./downloads:/downloads
     ports:
-      - 80:8080
+      - 8080:8080
+  frontend:
+    build:
+      context: fe
+      target: production
+    ports:
+      - 80:80
+
 
