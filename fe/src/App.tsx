@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Card, Text, Title, Grid } from '@mantine/core'
+import { Card, Text, Title, Grid, Modal } from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks';
 
 interface Assignment {
   name: string,
@@ -22,27 +23,33 @@ function App() {
       }
     ).then((response: Report[]) => setData(response));
   }, []);
-  console.log(data);
+
+  const [opened, { open, close }] = useDisclosure(false);
 
   return (
-    <Grid gutter={10}>
-      {
-        data.map((report) =>
-          <Grid.Col span={{ base: 12, sm: 4 }} key={report.id}>
-            <Card shadow="sm" padding="lg" radius="md" withBorder>
-              <Title order={4}>ID: {report.id}</Title>
-              {report.assignments.map(
-                (assignment, index) => (
-                  <Text key={index}>
-                    {assignment.name}: {assignment.status}
-                  </Text>
-                )
-              )}
-            </Card>
-          </Grid.Col >
-        )
-      }
-    </Grid >
+    <>
+      <Grid gutter={10}>
+        {
+          data.map((report) =>
+            <Grid.Col span={{ base: 12, sm: 4 }} key={report.id}>
+              <Card shadow="sm" padding="lg" radius="md" withBorder>
+                <Title order={4} onClick={open}>ID: {report.id}</Title>
+                {report.assignments.map(
+                  (assignment, index) => (
+                    <Text key={index}>
+                      {assignment.name}: {assignment.status}
+                    </Text>
+                  )
+                )}
+              </Card>
+            </Grid.Col >
+          )
+        }
+      </Grid >
+      <Modal opened={opened} onClose={close} title="Tree" centered>
+        Submission Tree
+      </Modal>
+    </>
   )
 }
 
