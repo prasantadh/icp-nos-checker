@@ -18,7 +18,7 @@ services:
     build:
       context: fe
       target: production
+      args:
+        - VITE_API_HOST=http://172.104.50.136:8080
     ports:
       - 80:80
-
-

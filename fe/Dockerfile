@@ -1,6 +1,7 @@
 FROM node:22-bullseye AS base
 WORKDIR /code
 COPY . /code
+ARG VITE_API_HOST
 RUN npm install
 RUN npm run build
 

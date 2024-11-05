@@ -17,7 +17,9 @@ function App() {
   const [data, setData] = useState<Report[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/").then(
+    console.log(import.meta.env);
+    console.log(import.meta.env.VITE_API_HOST);
+    fetch(`${import.meta.env.VITE_API_HOST}`).then(
       (response) => {
         return response.json();
       }
