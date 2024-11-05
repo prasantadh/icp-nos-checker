@@ -6,12 +6,13 @@ mod git;
 mod error;
 pub use error::{Error, Result};
 
-use axum::{extract::State, routing::get, Json, Router};
+use axum::{extract::Path, extract::State, routing::get, Json, Router};
 use chrono::prelude::*;
 use git::Report;
 use serde::{Deserialize, Serialize};
 use tokio::{net::TcpListener, runtime::Runtime};
 use tower_http::cors::{Any, CorsLayer};
+use walkdir::WalkDir;
 
 use std::{
     fs, mem,
@@ -62,6 +63,7 @@ async fn main() {
     let cors = CorsLayer::new().allow_methods(Any).allow_origin(Any);
     let app = Router::new()
         .route("/", get(get_submissions))
+        .route("/files/:id", get(get_files))
         .layer(cors)
         .with_state(state.clone());
 
@@ -89,4 +91,19 @@ async fn get_submissions(State(state): State<AppState>) -> Json<Vec<Report>> {
     let current = state.report.lock().unwrap();
     let copy = (*current).clone();
     axum::Json(copy)
+}
+
+async fn get_files(Path(id): Path<String>) -> Json<Vec<String>> {
+    let root = format!("{}/{}/", config().downloads.clone(), id);
+    let entries: Vec<String> = WalkDir::new(&root)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .map(|e| e.path().display().to_string())
+        .map(|e| e.replace(&root, ""))
+        .filter_map(|e| (!e.is_empty()).then_some(e))
+        .filter_map(|e| (!e.starts_with('.')).then_some(e))
+        .collect();
+    println!("entries: {:#?}", entries);
+
+    axum::Json(entries)
 }
