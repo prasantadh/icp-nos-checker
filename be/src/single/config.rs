@@ -12,6 +12,8 @@ pub struct Config {
     pub assignments: String,
     pub submissions: String,
     pub downloads: String,
+    pub password: String,
+    pub jwt_key: String,
 }
 
 impl Config {
@@ -20,6 +22,8 @@ impl Config {
             assignments: get_env("ASSIGNMENTS")?,
             submissions: get_env("SUBMISSIONS")?,
             downloads: get_env("DOWNLOADS")?,
+            password: get_env("PASSWORD")?,
+            jwt_key: get_env("JWT_KEY")?,
         })
     }
 }

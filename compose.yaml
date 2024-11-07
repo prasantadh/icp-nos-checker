@@ -8,6 +8,8 @@ services:
       - ASSIGNMENTS=/data/assignments.json
       - SUBMISSIONS=/data/submissions.csv
       - DOWNLOADS=/downloads
+      # - PASSWORD
+      # - JWT_KEY
     volumes:
       - ./db/assignments.json:/data/assignments.json
       - ./db/submissions.csv:/data/submissions.csv

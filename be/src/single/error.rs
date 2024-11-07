@@ -1,9 +1,12 @@
+use axum::{http::StatusCode, response::IntoResponse};
+
 pub type Result<T> = core::result::Result<T, Error>;
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum Error {
-    Git(git2::Error),
-    IO(std::io::Error),
+    Git,
+    IO,
+    JWT,
     Utf(std::str::Utf8Error),
     ParseInt(std::num::ParseIntError),
     VarError(std::env::VarError, &'static str),
@@ -19,14 +22,14 @@ impl std::fmt::Display for Error {
 }
 
 impl From<git2::Error> for Error {
-    fn from(value: git2::Error) -> Self {
-        Self::Git(value)
+    fn from(_: git2::Error) -> Self {
+        Self::Git
     }
 }
 
 impl From<std::io::Error> for Error {
-    fn from(value: std::io::Error) -> Self {
-        Self::IO(value)
+    fn from(_: std::io::Error) -> Self {
+        Self::IO
     }
 }
 
@@ -39,5 +42,13 @@ impl From<std::str::Utf8Error> for Error {
 impl From<std::num::ParseIntError> for Error {
     fn from(value: std::num::ParseIntError) -> Self {
         Self::ParseInt(value)
+    }
+}
+
+impl IntoResponse for Error {
+    fn into_response(self) -> axum::response::Response {
+        let mut response = StatusCode::INTERNAL_SERVER_ERROR.into_response();
+        response.extensions_mut().insert(self);
+        response
     }
 }
