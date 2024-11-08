@@ -106,14 +106,14 @@ async fn main() {
     let state_clone = Arc::clone(&state.report);
     let rt = Runtime::new().unwrap();
     rt.spawn(async move {
-        // loop {
-        let report = git::report(assignments, submissions).unwrap();
-        // let report = git::report(&assignments, &submissions).unwrap();
-        let mut state = state_clone.lock().unwrap();
-        let _ = mem::replace(&mut *state, report);
-        println!("report updated");
-        drop(state);
-        // }
+        loop {
+            let report = git::report(assignments, submissions).unwrap();
+            // let report = git::report(&assignments, &submissions).unwrap();
+            let mut state = state_clone.lock().unwrap();
+            let _ = mem::replace(&mut *state, report);
+            println!("report updated");
+            drop(state);
+        }
     });
 
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
